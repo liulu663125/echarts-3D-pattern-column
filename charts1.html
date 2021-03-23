@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>市区仿3D地图</title>
+</head>
+<style>
+    .tip-box{
+        /* border:1px solid #91D5FF;
+        width: 168px;
+        height: 84px; */
+        border-radius: 4px;
+        background-color: transparent;
+    }
+</style>
+
+<body>
+    <div id="cart" style="width: 800px;height:900px;"></div>
+    <script src="./jquery-3.5.1.min.js"></script>
+    <script src="./echarts.min.js"></script>
+    <script src="https://echarts.baidu.com/resource/echarts-gl-latest/dist/echarts-gl.min.js"></script>
+    <script>
+        var uploadedDataURL2 = "./433000.json";
+        var uploadedDataURL = "./433000.json";
+        let cart = document.querySelector('#cart')
+        let myChart = echarts.init(cart);
+        var center = {
+            "罗湖区": [114.123885,22.555341],
+            "福田区": [114.05096,22.541009],
+            "南山区": [113.92943,22.531221],
+            "宝安区": [113.828671,22.684741],
+            "龙华区": [114.014346,22.691963],
+            "龙岗区": [114.251372,22.721511],
+            "光明区": [113.935895,22.748816],
+            "盐田区": [114.285366,22.585069],
+            "坪山区": [114.388441,22.69423],
+            "大鹏新区": [114.480366,22.57423],
+            
+        }
+        var center2 = {
+            "罗湖区": [114.123885,22.555341],
+            "福田区": [114.05096,22.541009],
+            "南山区": [113.92943,22.531221],
+            "宝安区": [113.828671,22.684741],
+            "龙华区": [114.014346,22.691963],
+            "龙岗区": [114.251372,22.721511],
+            "光明区": [113.935895,22.748816],
+            "盐田区": [114.285366,22.585069],
+            "坪山区": [114.388441,22.69423],
+            "大鹏新区": [114.480366,22.57423],
+        }
+        var data = [
+            { name: '罗湖区', value: (Math.random() * 200 + 1000).toFixed(0) },
+            { name: '福田区', value: (Math.random() * 200 + 1000).toFixed(0) },
+            { name: '南山区', value: (Math.random() * 200 + 1000).toFixed(0) },
+            { name: '宝安区', value: (Math.random() * 200 + 1000).toFixed(0) },
+            { name: '龙华区', value: (Math.random() * 200 + 1000).toFixed(0) },
+            { name: '龙岗区', value: (Math.random() * 200 + 1000).toFixed(0) },
+            { name: '光明区', value: (Math.random() * 200 + 1000).toFixed(0) },
+            { name: '盐田区', value: (Math.random() * 200 + 1000).toFixed(0) },
+            { name: '坪山区', value: (Math.random() * 200 + 1000).toFixed(0) },
+            { name: '大鹏新区', value: (Math.random() * 200 + 1000).toFixed(0) }
+        ]
+        var lineData = data.map(item => {
+            return {
+                coords: [
+                    center[item.name],
+                    [center[item.name][0], center[item.name][1] + item.value * 0.0001]
+                ]
+            }
+        })
+        var scatterData = data.map(item => {
+            return [center[item.name][0], center[item.name][1] + item.value * 0.0001]
+        })
+        var scatterData2 = data.map(item => {
+            return center[item.name]
+        })
+       
+        var scatterData3 = data.map(item => {
+            return center2[item.name].concat(item.name)
+        })
+        // 设置底部模块
+        $.get(uploadedDataURL2, function (json) {
+            echarts.registerMap('js2', json);
+        })
+        let option = {}
+        $.get(uploadedDataURL, function (json) {
+            echarts.registerMap('js', json);
+            option = {
+                // backgroundColor: '#333',
+                backgroundColor: {
+                    type: 'linear',
+                    x: 0,
+                    y: 0,
+                    x2: 0,
+                    y2: 1,
+                    colorStops: [{
+                        offset: 0, color: '#0D2468' // 0% 处的颜色
+                    }, {
+                        offset: 1, color: '#09134A' // 100% 处的颜色
+                    }],
+                    global: false // 缺省为 false
+                },
+                tooltip : {
+                    trigger: 'item',
+                    show: true,
+                    formatter: function(data){
+                        console.log(data);
+                        let name =`<div class="tip-box">
+                            <p>区域：${data.value[data.value.length-1]}</p>
+                            <p>X：${data.value[0]}</p>
+                            <p>Y：${data.value[1]}</p>
+                            </div>`;
+                        return name;
+                    }
+                },
+                geo: [{
+                    map: 'js',//最上面模块配置
+                    aspectScale: 0.9,
+                    roam: false, //是否允许缩放
+                    layoutSize: '95%',
+                    layoutCenter: ['50%', '50%'],
+                    itemStyle: {//默认颜色边框等
+                        areaColor: '#183890',
+                        borderColor: '#2EA7E0',
+                        borderWidth: 2,
+                    },
+                    emphasis: {
+                        itemStyle: {
+                            areaColor: '#033376'
+                        },
+                        label: {
+                            show: 0,
+                            color: '#B7E3FF'
+                        }
+                    },
+                    zlevel: 3,
+                  
+                    }, 
+                {
+                    map: 'js2',
+                    aspectScale: 0.9,
+                    roam: false, //是否允许缩放
+                    //zoom: 1.1, //默认显示级别
+                    layoutSize: '95%',
+                    layoutCenter: ['50%', '52%'],
+                    itemStyle: {
+                        areaColor: '#0D2468',
+                        borderColor: '#329BF5',
+                        borderWidth: 1,
+                    },
+                    zlevel: 1,
+                    silent: true,
+                },
+            ],
+                series: [
+                    {
+                    type: 'lines',//圆柱体
+                    zlevel: 5,
+                    effect: {
+                        show: false,
+                        period: 4, //箭头指向速度，值越小速度越快
+                        trailLength: 0.02, //特效尾迹长度[0,1]值越大，尾迹越长重
+                        symbol: 'arrow', //箭头图标
+                        symbolSize: 5, //图标大小
+                    },
+                    lineStyle: {
+                        width: 8, //尾迹线条宽度
+                        color: 
+                        {
+                            type: 'linear',
+                            x: 0,
+                            y: 0,
+                            x2: 0,
+                            y2: 1.5,
+                            colorStops: [{
+                                offset: 0.3, color: '#BAA752' // 100% 处的颜色
+                            },{
+                                offset: 0.7, color: '#fff' // 0% 处的颜色
+                            }, ],
+                            global: false // 缺省为 false
+                        },
+                        // opacity: 1, //尾迹线条透明度
+                        // curveness: 0 //尾迹线条曲直度
+                    },
+                    label: {
+                        show: 0,
+                        position: 'end',
+                        formatter: '245'
+                    },
+                    silent: true,
+                    data: lineData
+                }, 
+                {
+                    type: 'scatter',//圆柱体顶部
+                    coordinateSystem: 'geo',
+                    geoIndex: 0,
+                    zlevel: 5,
+                    label: {
+                        show: !0,
+                        position: 'right',
+                        formatter: params => data[params.dataIndex].value,
+                        padding: [4, 8],
+                        backgroundColor: '#003F5E',
+                        borderRadius: 5,
+                        borderColor: '#67F0EF',
+                        borderWidth: 1,
+                        color: '#67F0EF'
+                    },
+                    symbol: 'circle',
+                    symbolSize: [8, 4],//柱子上面圆的宽高
+                    itemStyle: {
+                        color: '#BAA752',
+                        opacity: 0.6
+                    },
+                    silent: true,
+                    data: scatterData
+                }, 
+                {
+                    type: 'effectScatter',//光标，标注点文字显示配置
+                    coordinateSystem: 'geo',
+                    geoIndex: 0,
+                    symbol: 'circle',
+                    symbolSize: 4,
+                    showEffectOn: 'render',
+                    rippleEffect: {
+                        brushType: 'fill',
+                        scale: 10
+                    },
+                    hoverAnimation: true,
+                    label: {//文字
+                        formatter: p => p.data[2],
+                        position: 'right',
+                        color: '#B7E3FF',
+                        fontSize: 14,
+                        distance: 10,
+                        show: !0,
+                    },
+                    itemStyle: {//光标点
+                        color: '#FEF134',
+                    },
+                    zlevel: 6,
+                    data: scatterData3
+                }
+            ]
+            };
+           
+           myChart.setOption(option);
+        });
+        
+        myChart.on("click",function(e){
+                //防止重复点击
+            if(this.name == e.name){
+                return false;
+            }
+            option.series[0].data[0].name = e.name;
+            myChart.setOption(option);
+            console.log(e.name)
+            this.name = e.name;
+        })
+    
+    
+    </script>
+</body>
+
+</html>
