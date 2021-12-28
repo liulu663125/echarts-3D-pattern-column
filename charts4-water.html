@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>水波球</title>
+</head>
+
+<body>
+    <div id="chart" style="width: 1000px;height:900px;"></div>
+    <script src="./echarts.min.js"></script>
+    <script src="http://echarts.baidu.com/resource/echarts-liquidfill-1.0.4/dist/echarts-liquidfill.js" type="text/javascript" charset="utf-8"></script>
+    <script>
+        let chart = document.querySelector('#chart')
+        let myChart = echarts.init(chart);
+
+        let option = {
+            series: [
+                {
+                type: 'liquidFill',
+                radius: '85%',
+                center: ['50%', '50%'],
+                data: [0.7], // data个数代表波浪数
+                color: ['rgba(26, 122, 247, 1)'],
+                outline: { // 轮廓设置
+                    show: false,
+                },
+                itemStyle: {
+                    normal: {
+                        shadowColor: 'rgba(22, 22, 22, 0.5)',
+                        shadowBlur: 2
+                    }
+                },
+                backgroundStyle: {
+                    borderWidth: 5,
+                    borderColor: 'rgba(26, 122, 247, 1)',
+                    shadowColor: '#008DCE',
+                    color: '#fff'
+                },
+                label: {//中间内容文字
+                    normal:{
+                    formatter: function (data) {
+                        return "{a|" +
+                        '已使用' +
+                        "}" +
+                        "\n" +
+                        "{b|" +
+                        data.value + Math.floor((Math.random() * 100) + 1) +
+                        "}"
+                    },
+                    position: ["50%", "50%"],
+                    rich: {
+                        //富文本 对字体进一步设置样式。a对应的value,b对应的healthyName
+                        a: {
+                        fontSize: 14,
+                        lineHeight: 10,
+                        // color: '#74798C',
+                        padding: [40, 0, 0, 0]
+                        },
+                        b: {
+                        fontSize: 20,
+                        lineHeight: 10,
+                        fontWeight: "bold",
+                        // color: '#20253A',
+                        padding: [0, 0, 40, 0]
+                        }
+                    }
+                    }
+                },
+                }
+            ],
+        }
+        myChart.setOption(option);
+    </script>
+</body>
+
+</html>
