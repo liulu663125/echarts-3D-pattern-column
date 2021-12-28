@@ -10,8 +10,8 @@
 
 <body>
     <div id="chart" style="width: 1000px;height:900px;"></div>
-    <script src="./echarts.min.js"></script>
-    <script src="http://echarts.baidu.com/resource/echarts-liquidfill-1.0.4/dist/echarts-liquidfill.js" type="text/javascript" charset="utf-8"></script>
+    <script src="./lib/echarts.5.2.2.min.js"></script>
+    <script src="./lib/echarts-liquidfill.min.js" type="text/javascript" charset="utf-8"></script>
     <script>
         let chart = document.querySelector('#chart')
         let myChart = echarts.init(chart);
@@ -39,7 +39,7 @@
                     shadowColor: '#008DCE',
                     color: '#fff'
                 },
-                label: {//中间内容文字
+                label: {
                     normal:{
                     formatter: function (data) {
                         return "{a|" +
@@ -71,7 +71,7 @@
                 },
                 }
             ],
-        }
+            }
         myChart.setOption(option);
     </script>
 </body>
